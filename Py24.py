@@ -1,17 +1,24 @@
 from tkinter import *
+import configparser
+import random
 import tkinter.messagebox as messagebox
 
 class Application(Frame):
 
     def __init__(self, master=None):
         Frame.__init__(self, master)
-        self.numberRange = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13']
+        #self.numberRange = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13']
+        self.config = configparser.ConfigParser()
+        self.config.read('config.ini')
+        self.inputStart = int(self.config['General']['InputRangeStart'])
+        self.inputEnd = int(self.config['General']['InputRangeEnd'])
+
+        self.inputIntList = range(self.inputStart, self.inputEnd+1)
         self.inputVar1 = StringVar()
         self.inputVar2 = StringVar()
         self.inputVar3 = StringVar()
         self.inputVar4 = StringVar()
         self.createWidgets()
-
 
     def createWidgets(self):
         self.master.title("24")
@@ -26,18 +33,18 @@ class Application(Frame):
         secondFrame = Frame(self)
         secondFrame.pack(fill=X, expand=True)
 
-        self.inputVar1.set('1')
-        self.inputVar2.set('1')
-        self.inputVar3.set('1')
-        self.inputVar4.set('1')
+        self.inputVar1.set(self.inputStart)
+        self.inputVar2.set(self.inputStart)
+        self.inputVar3.set(self.inputStart)
+        self.inputVar4.set(self.inputStart)
 
-        self.option1 = OptionMenu(secondFrame, self.inputVar1, *self.numberRange)
+        self.option1 = OptionMenu(secondFrame, self.inputVar1, *self.inputIntList)
         self.option1.pack(padx=2, side=LEFT)
-        self.option2 = OptionMenu(secondFrame, self.inputVar2, *self.numberRange)
+        self.option2 = OptionMenu(secondFrame, self.inputVar2, *self.inputIntList)
         self.option2.pack(padx=2, side=LEFT)
-        self.option3 = OptionMenu(secondFrame, self.inputVar3, *self.numberRange)
+        self.option3 = OptionMenu(secondFrame, self.inputVar3, *self.inputIntList)
         self.option3.pack(padx=2, side=LEFT)
-        self.option4 = OptionMenu(secondFrame, self.inputVar4, *self.numberRange)
+        self.option4 = OptionMenu(secondFrame, self.inputVar4, *self.inputIntList)
         self.option4.pack(padx=2, side=LEFT)
 
         thirdFrame = Frame(self)
@@ -67,14 +74,28 @@ class Application(Frame):
         self.dumpButton.pack(padx=5, pady=5, side=RIGHT)
 
     def generateRandomProblem(self):
+        random.seed()
+        input1 = str(random.randint(self.inputStart, self.inputEnd))
+        input2 = str(random.randint(self.inputStart, self.inputEnd))
+        input3 = str(random.randint(self.inputStart, self.inputEnd))
+        input4 = str(random.randint(self.inputStart, self.inputEnd))
+        self.inputVar1.set(input1)
+        self.inputVar2.set(input2)
+        self.inputVar3.set(input3)
+        self.inputVar4.set(input4)
+        return
+
+    def compute(self):
         input1 = int(self.inputVar1.get())
         input2 = int(self.inputVar2.get())
         input3 = int(self.inputVar3.get())
         input4 = int(self.inputVar4.get())
-        messagebox.showinfo('Adding a new site', '%d, %d, %d, %d' % (input1, input2, input3, input4))
+        inputs = (input1, input2, input3, input4)
+        self.calculate(inputs)
         return
 
-    def compute(self):
+    def calculate(self, inputs):
+        messagebox.showinfo('Adding a new site', '%d, %d, %d, %d' % (inputs[0], inputs[1], inputs[2], inputs[3]))
         return
 
     def clear(self):
