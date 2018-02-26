@@ -90,44 +90,32 @@ class Application(Frame):
         input2 = int(self.inputVar2.get())
         input3 = int(self.inputVar3.get())
         input4 = int(self.inputVar4.get())
-        inputs = (input1, input2, input3, input4)
+        inputs = ((input1, str(input1)), (input2, str(input2)), (input3, str(input3)), (input4, str(input4)))
         # inputs = (1, 5, 4)
+        self.solution = ''
         if (self.calculate(inputs)):
-            self.listBox.insert(END, '%d, %d, %d, %d - true' % (inputs[0], inputs[1], inputs[2], inputs[3]))
+            self.listBox.insert(END, '%d, %d, %d, %d - %s' % (inputs[0][0], inputs[1][0], inputs[2][0], inputs[3][0], self.solution))
         else:
-            self.listBox.insert(END, '%d, %d, %d, %d - false' % (inputs[0], inputs[1], inputs[2], inputs[3]))
+            self.listBox.insert(END, '%d, %d, %d, %d - %s' % (inputs[0][0], inputs[1][0], inputs[2][0], inputs[3][0], 'No solution'))
         return
 
     def calculate(self, inputs):
         #messagebox.showinfo('Adding a new site', '%d, %d, %d, %d' % (inputs[0], inputs[1], inputs[2], inputs[3]))
-        if (len(inputs) == 2):
-            operand1 = inputs[0]
-            operand2 = inputs[1]
-            # print ('%d, %d' % (operand1, operand2))
-            if (self.isclose(24.0, (operand1 + operand2))):
+        if (len(inputs) == 1):
+            if (self.isclose(24.0, inputs[0][0])):
+                self.solution = inputs[0][1]
                 return True
-            if (self.isclose(24.0, (operand1 - operand2))):
-                return True
-            if (self.isclose(24.0, (operand2 - operand1))):
-                return True
-            if (self.isclose(24.0, (operand1 * operand2))):
-                return True
-            if ((operand2 != 0) and self.isclose(24.0, (operand1 / operand2))):
-                return true
-            if ((operand1 != 0) and self.isclose(24.0, (operand2 / operand1))):
-                return True
-            else:
-                return False
         else:
             combinations = self.generateCombination(inputs)
-            print(combinations)
+            # print(combinations)
             for i in combinations:
                 if (self.calculate(i)):
                     return True
         return
 
+    # there is a math.isclose() in Python 3.5, may switch to that once I upgrade
     def isclose(self, a, b, eps=0.0001):
-        print('%d' % b)
+        # print('%d' % b)
         return abs(a - b) <= eps
 
     def generateCombination(self, inputs):
@@ -142,33 +130,34 @@ class Application(Frame):
                     if (k != i) and (k != j):
                         combination.append(inputs[k])
                 
-                combination.append(operand1 + operand2)
+                combination.append(((operand1[0] + operand2[0]), '(' + operand1[1] + '+' + operand2[1] + ')'))
                 result.append(list(combination))
                 del combination[-1]
                 
-                combination.append(operand1 - operand2)
+                combination.append(((operand1[0] - operand2[0]), '(' + operand1[1] + '-' + operand2[1] + ')'))
                 result.append(list(combination))
                 del combination[-1]
                 
-                combination.append(operand2 - operand1)
+
+                combination.append(((operand2[0] - operand1[0]), '(' + operand2[1] + '-' + operand1[1] + ')'))
                 result.append(list(combination))
                 del combination[-1]
                 
-                combination.append(operand1 * operand2)
+                combination.append(((operand1[0] * operand2[0]), '(' + operand1[1] + '*' + operand2[1] + ')'))
                 result.append(list(combination))
                 del combination[-1]
                 
-                if (operand2 != 0):
-                    combination.append(operand1 / operand2)
+                if (operand2[0] != 0):
+                    combination.append(((operand1[0] / operand2[0]), '(' + operand1[1] + '/' + operand2[1] + ')'))
                     result.append(list(combination))
                     del combination[-1]
                 
-                if (operand1 != 0):
-                    combination.append(operand2 / operand1)
+                if (operand1[0] != 0):
+                    combination.append(((operand2[0] / operand1[0]), '(' + operand2[1] + '/' + operand1[1] + ')'))
                     result.append(list(combination))
                     del combination[-1]
 
-        return result 
+        return result
 
     def clear(self):
         return
