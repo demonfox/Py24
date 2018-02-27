@@ -91,7 +91,6 @@ class Application(Frame):
         input3 = int(self.inputVar3.get())
         input4 = int(self.inputVar4.get())
         inputs = ((input1, str(input1)), (input2, str(input2)), (input3, str(input3)), (input4, str(input4)))
-        # inputs = (1, 5, 4)
         self.solution = ''
         if (self.calculate(inputs)):
             self.listBox.insert(END, '%d, %d, %d, %d - %s' % (inputs[0][0], inputs[1][0], inputs[2][0], inputs[3][0], self.solution))
@@ -160,12 +159,17 @@ class Application(Frame):
         return result
 
     def clear(self):
+        self.listBox.delete(0, END)
         return
 
     def getCheatSheet(self):
         return
 
     def dumpCheatSheet(self):
+        with open('solution.txt', 'w') as f:
+            for index in range(self.listBox.size()):
+                f.write(self.listBox.get(index))
+                f.write('\n')
         return
 
 app = Application()
