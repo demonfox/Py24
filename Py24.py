@@ -1,5 +1,6 @@
 from tkinter import *
 import configparser
+import threading
 import random
 import tkinter.messagebox as messagebox
 
@@ -163,6 +164,21 @@ class Application(Frame):
         return
 
     def getCheatSheet(self):
+        t = threading.Thread(target=self.calculateAll)
+        t.daemon = True
+        t.start()
+        return
+
+    def calculateAll(self):
+        for i in range(self.inputStart, self.inputEnd+1):
+            for j in range(self.inputStart, self.inputEnd+1):
+                for k in range(self.inputStart, self.inputEnd+1):
+                    for l in range(self.inputStart, self.inputEnd+1):
+                        self.inputVar1.set(i)
+                        self.inputVar2.set(j)
+                        self.inputVar3.set(k)
+                        self.inputVar4.set(l)
+                        self.compute()
         return
 
     def dumpCheatSheet(self):
